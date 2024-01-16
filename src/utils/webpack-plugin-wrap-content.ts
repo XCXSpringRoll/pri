@@ -15,30 +15,29 @@ export class WrapContent {
   }
 
   public apply(compiler: webpack.Compiler) {
-    compiler.hooks.compilation.tap('WrapContent', compilation => {
-      compilation.hooks.optimizeChunkAssets.tapAsync('WrapContent', (chunks: any, done: any) => {
-        chunks.forEach((chunk: any) => {
-          chunk.files.forEach((fileName: string) => {
-            // Ignore workers
-            if (fileName.indexOf('worker.js') > -1) {
-              return;
-            }
-
-            if (
-              chunk.name === 'main' ||
-              chunk.name === path.basename(pri.sourceConfig.outFileName, '.js') ||
-              _.has(pri.sourceConfig.entries, chunk.name)
-            ) {
-              compilation.assets[fileName] = new ConcatSource.ConcatSource(
-                this.header,
-                compilation.assets[fileName],
-                this.footer,
-              );
-            }
-          });
-        });
-        done();
-      });
-    });
+    // compiler.hooks.compilation.tap('WrapContent', compilation => {
+    //   compilation.hooks.optimizeChunkAssets.tapAsync('WrapContent', (chunks: any, done: any) => {
+    //     chunks.forEach((chunk: any) => {
+    //       chunk.files.forEach((fileName: string) => {
+    //         // Ignore workers
+    //         if (fileName.indexOf('worker.js') > -1) {
+    //           return;
+    //         }
+    //         if (
+    //           chunk.name === 'main' ||
+    //           chunk.name === path.basename(pri.sourceConfig.outFileName, '.js') ||
+    //           _.has(pri.sourceConfig.entries, chunk.name)
+    //         ) {
+    //           compilation.assets[fileName] = new ConcatSource.ConcatSource(
+    //             this.header,
+    //             compilation.assets[fileName],
+    //             this.footer,
+    //           );
+    //         }
+    //       });
+    //     });
+    //     done();
+    //   });
+    // });
   }
 }

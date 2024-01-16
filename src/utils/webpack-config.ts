@@ -1,6 +1,6 @@
 import * as HtmlWebpackPlugin from 'html-webpack-plugin';
 import * as MiniCssExtractPlugin from 'mini-css-extract-plugin';
-import * as OptimizeCssAssetsPlugin from 'optimize-css-assets-webpack-plugin';
+import * as CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
 import * as path from 'path';
 import * as webpack from 'webpack';
 import * as yargs from 'yargs';
@@ -28,8 +28,9 @@ export type IOptions<T = unknown> = {
   outCssFileName?: string;
   externals?: any[];
   target?: webpack.Configuration['target'];
-  libraryTarget?: webpack.LibraryTarget;
-  devtool?: webpack.Options.Devtool;
+  // libraryTarget?: webpack.LibraryTarget;
+  // library: string | string[] | object;
+  devtool?: webpack.Configuration['devtool'];
 } & T;
 
 const defaultSourcePathToBeResolve = [
@@ -176,12 +177,15 @@ export const getWebpackConfig = async (opts: IOptions) => {
       path: distDir,
       filename: outFileName,
       publicPath,
-      chunkFilename: '[name].[hash].chunk.js',
-      hotUpdateChunkFilename: 'hot~[id].[hash].chunk.js',
-      hotUpdateMainFilename: 'hot-update.[hash].json',
+      chunkFilename: '[name].[contenthash].chunk.js',
+      hotUpdateChunkFilename: 'hot~[id].[contenthash].chunk.js',
+      hotUpdateMainFilename: 'hot-update.[contenthash].json',
       hashDigestLength: 4,
       globalObject: "(typeof self !== 'undefined' ? self : this)",
-      libraryTarget: opts.libraryTarget || 'var',
+      library: {
+        name: 'pri',
+        type: opts.libraryTarget || 'var',
+      },
     },
     module: {
       rules: [
@@ -324,7 +328,9 @@ export const getWebpackConfig = async (opts: IOptions) => {
     },
     plugins: [],
     optimization: {
-      namedChunks: false,
+      chunkIds: false,
+      minimize: true,
+      minimizer: [new CssMinimizerPlugin()],
       splitChunks: {
         cacheGroups: {
           default: false,
@@ -356,7 +362,7 @@ export const getWebpackConfig = async (opts: IOptions) => {
       );
     }
 
-    config.plugins.push(new OptimizeCssAssetsPlugin());
+    // config.plugins.push(new OptimizeCssAssetsPlugin());
   }
 
   if (globalState.isDevelopment) {
