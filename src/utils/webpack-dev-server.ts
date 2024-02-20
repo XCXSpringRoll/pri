@@ -81,12 +81,6 @@ export const runWebpackDevServer = async (
           mode: 'write-references',
           ...globalState.sourceConfig.devChecker?.typescript,
         },
-        eslint: {
-          enabled: false,
-          memoryLimit: 8192,
-          files: [`./${srcPath.dir}/**/*.{ts,tsx}`, `./${packagesPath.dir}/**/*.{ts,tsx}`],
-          ...globalState.sourceConfig.devChecker?.eslint,
-        },
         issue: globalState.sourceConfig.devChecker?.issue,
       }),
     );
@@ -95,30 +89,16 @@ export const runWebpackDevServer = async (
   const defaultWebpackDevServerConfig: WebpackDevServer.Configuration = {
     host: globalState.sourceConfig.host,
     hot: opts.hot,
-    hotOnly: opts.hot,
-    publicPath: opts.publicPath,
-    before: (app: any) => {
-      app.use((req: any, res: any, next: any) => {
-        // CORS
-        res.setHeader('Access-Control-Allow-Origin', '*');
-        res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-        res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-        res.setHeader('Access-Control-Allow-Credentials', true);
-        next();
-      });
-      app.use('/', express.static(path.join(globalState.projectRootPath, tempPath.dir, 'static')));
+    static: {
+      publicPath: opts.publicPath,
     },
     compress: true,
     ...(!opts.jsOnly && {
       historyApiFallback: { rewrites: [{ from: '/', to: normalizePath(path.join(opts.publicPath, 'index.html')) }] },
     }),
     https: _.defaults({ value: opts.https }, { value: globalState.sourceConfig.useHttps }).value,
-    overlay: { warnings: false, errors: true },
-    stats,
-    watchOptions: {
-      ...(!globalState.sourceConfig.watchNodeModules && {
-        ignored: /node_modules/,
-      }),
+    client: {
+      overlay: { warnings: false, errors: true },
     },
     headers: {
       'Access-Control-Allow-Origin': '*',
@@ -126,16 +106,12 @@ export const runWebpackDevServer = async (
       'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
       'Access-Control-Allow-Headers': 'X-Requested-With, content-type, Authorization, x-csrf-token',
     },
-    clientLogLevel: 'warn',
-    disableHostCheck: true,
+    allowedHosts: 'all',
     port: opts.devServerPort,
-    contentBase: opts.contentBase,
   } as any;
   const webpackDevServerConfig = (await plugin.devServerConfigPipes.reduce(async (newConfig, fn) => {
     return fn(await newConfig);
   }, Promise.resolve(defaultWebpackDevServerConfig))) as any;
-
-  WebpackDevServer.addDevServerEntrypoints(webpackConfig as any, webpackDevServerConfig);
 
   if (yargs.argv.measureSpeed) {
     webpackConfig = smp.wrap(webpackConfig);

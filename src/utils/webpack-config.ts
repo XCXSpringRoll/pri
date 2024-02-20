@@ -164,7 +164,7 @@ export const getWebpackConfig = async (opts: IOptions) => {
   let { devtool } = opts;
 
   if (devtool === undefined) {
-    devtool = opts.mode === 'development' ? 'cheap-module-eval-source-map' : false;
+    devtool = opts.mode === 'development' ? 'eval-cheap-module-source-map' : false;
   }
 
   const config: webpack.Configuration = {
@@ -179,7 +179,6 @@ export const getWebpackConfig = async (opts: IOptions) => {
       publicPath,
       chunkFilename: '[name].[contenthash].chunk.js',
       hotUpdateChunkFilename: 'hot~[id].[contenthash].chunk.js',
-      hotUpdateMainFilename: 'hot-update.[contenthash].json',
       hashDigestLength: 4,
       globalObject: "(typeof self !== 'undefined' ? self : this)",
       library: {
@@ -322,13 +321,17 @@ export const getWebpackConfig = async (opts: IOptions) => {
         'ttf',
         'svg',
       ],
+      fallback: {
+        http: require.resolve('stream-http'),
+        url: require.resolve('url'),
+        buffer: require.resolve('buffer'),
+      },
     },
     resolveLoader: {
       modules: selfAndProjectNodeModules,
     },
     plugins: [],
     optimization: {
-      chunkIds: false,
       minimize: true,
       minimizer: [new CssMinimizerPlugin()],
       splitChunks: {
@@ -338,6 +341,11 @@ export const getWebpackConfig = async (opts: IOptions) => {
       },
     },
     stats,
+    watchOptions: {
+      ...(!globalState.sourceConfig.watchNodeModules && {
+        ignored: /node_modules/,
+      }),
+    },
   };
 
   if (globalState.isDevelopment) {
