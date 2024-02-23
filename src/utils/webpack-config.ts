@@ -28,8 +28,6 @@ export type IOptions<T = unknown> = {
   outCssFileName?: string;
   externals?: any[];
   target?: webpack.Configuration['target'];
-  // libraryTarget?: webpack.LibraryTarget;
-  // library: string | string[] | object;
   devtool?: webpack.Configuration['devtool'];
 } & T;
 
@@ -176,15 +174,11 @@ export const getWebpackConfig = async (opts: IOptions) => {
     output: {
       path: distDir,
       filename: outFileName,
-      publicPath,
+      publicPath: 'auto',
       chunkFilename: '[name].[contenthash].chunk.js',
       hotUpdateChunkFilename: 'hot~[id].[contenthash].chunk.js',
       hashDigestLength: 4,
       globalObject: "(typeof self !== 'undefined' ? self : this)",
-      library: {
-        name: 'pri',
-        type: opts.libraryTarget || 'var',
-      },
     },
     module: {
       rules: [

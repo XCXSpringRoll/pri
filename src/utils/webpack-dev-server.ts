@@ -53,8 +53,6 @@ export const runWebpackDevServer = async (
     webpackConfig = await opts.pipeConfig(webpackConfig);
   }
 
-  webpackConfig.plugins.push(new webpack.HotModuleReplacementPlugin());
-
   webpackConfig.plugins.push(new WebpackBar());
 
   // If set open in project config, perform a circular dependency check
@@ -96,7 +94,9 @@ export const runWebpackDevServer = async (
     ...(!opts.jsOnly && {
       historyApiFallback: { rewrites: [{ from: '/', to: normalizePath(path.join(opts.publicPath, 'index.html')) }] },
     }),
-    https: _.defaults({ value: opts.https }, { value: globalState.sourceConfig.useHttps }).value,
+    server: {
+      type: 'https',
+    },
     client: {
       overlay: { warnings: false, errors: true },
     },
@@ -109,6 +109,7 @@ export const runWebpackDevServer = async (
     allowedHosts: 'all',
     port: opts.devServerPort,
   } as any;
+
   const webpackDevServerConfig = (await plugin.devServerConfigPipes.reduce(async (newConfig, fn) => {
     return fn(await newConfig);
   }, Promise.resolve(defaultWebpackDevServerConfig))) as any;
@@ -123,27 +124,35 @@ export const runWebpackDevServer = async (
 
   const compiler = webpack(webpackConfig);
 
-  const devServer = new WebpackDevServer(compiler as any, webpackDevServerConfig);
+  const devServer = new WebpackDevServer(webpackDevServerConfig, compiler);
   const { port, host, https } = webpackDevServerConfig;
 
-  devServer.listen(port, host, () => {
-    let devUrl: string = null;
-    const localSuggestUrl = urlJoin(`${https ? 'https' : 'http'}://${host}:${port}`, globalState.sourceConfig.baseHref);
+  devServer
+    .start()
+    .then(() => {
+      let devUrl: string = null;
+      const localSuggestUrl = urlJoin(
+        `${https ? 'https' : 'http'}://${host}:${port}`,
+        globalState.sourceConfig.baseHref,
+      );
 
-    if (opts.devUrl === host) {
-      devUrl = localSuggestUrl;
-    } else if (opts.devUrl !== undefined) {
-      ({ devUrl } = opts);
-    } else if (globalState.sourceConfig.devUrl !== undefined && globalState.sourceConfig.devUrl !== null) {
-      ({ devUrl } = globalState.sourceConfig);
-    } else {
-      devUrl = localSuggestUrl;
-    }
+      if (opts.devUrl === host) {
+        devUrl = localSuggestUrl;
+      } else if (opts.devUrl !== undefined) {
+        ({ devUrl } = opts);
+      } else if (globalState.sourceConfig.devUrl !== undefined && globalState.sourceConfig.devUrl !== null) {
+        ({ devUrl } = globalState.sourceConfig);
+      } else {
+        devUrl = localSuggestUrl;
+      }
 
-    logInfo(`Serve on ${devUrl}`);
+      logInfo(`Serve on ${devUrl}`);
 
-    if (opts.autoOpenBrowser && devUrl) {
-      open(devUrl);
-    }
-  });
+      if (opts.autoOpenBrowser && devUrl) {
+        open(devUrl);
+      }
+    })
+    .catch(err => {
+      console.error(`Failed to start dev server`, err);
+    });
 };
