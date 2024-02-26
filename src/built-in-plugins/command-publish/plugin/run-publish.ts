@@ -108,7 +108,7 @@ async function authPublish(packageNames: string[]) {
     try {
       const nameRet = execSync(`${npmClient} whoami`);
       name = nameRet.toString().trim();
-    } catch (error) {
+    } catch (error: any) {
       logFatal(error);
     }
     return name;
