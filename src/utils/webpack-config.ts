@@ -175,8 +175,8 @@ export const getWebpackConfig = async (opts: IOptions) => {
       path: distDir,
       filename: outFileName,
       publicPath: 'auto',
-      chunkFilename: '[name].[contenthash].chunk.js',
-      hotUpdateChunkFilename: 'hot~[id].[contenthash].chunk.js',
+      chunkFilename: '[name].[hash].chunk.js',
+      hotUpdateChunkFilename: 'hot~[id].[hash].chunk.js',
       hashDigestLength: 4,
       globalObject: "(typeof self !== 'undefined' ? self : this)",
     },
@@ -340,6 +340,7 @@ export const getWebpackConfig = async (opts: IOptions) => {
         ignored: /node_modules/,
       }),
     },
+    cache: true,
   };
 
   if (globalState.isDevelopment) {
