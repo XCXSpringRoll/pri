@@ -1,5 +1,5 @@
-<a name="4.4.1-beta.1"></a>
-## [4.4.1-beta.1](https://github.com/prijs/pri/compare/3.3.28-beta.5...4.4.1-beta.1) (2024-02-29)
+<a name="4.4.1-beta.2"></a>
+## [4.4.1-beta.2](https://github.com/prijs/pri/compare/3.3.28-beta.5...4.4.1-beta.2) (2024-03-01)
 
 
 ### Bug Fixes
@@ -82,6 +82,7 @@
 * rm global no-console ([bc216db](https://github.com/prijs/pri/commit/bc216db))
 * temp file type error ([b39284b](https://github.com/prijs/pri/commit/b39284b))
 * test ([967f0e6](https://github.com/prijs/pri/commit/967f0e6))
+* test babel allowDeclareFields ([04fe7cc](https://github.com/prijs/pri/commit/04fe7cc))
 * ts ([807bd73](https://github.com/prijs/pri/commit/807bd73))
 * ts bug ([89fec45](https://github.com/prijs/pri/commit/89fec45))
 * type ([f67ca43](https://github.com/prijs/pri/commit/f67ca43))

@@ -34,7 +34,7 @@ export function getBabelOptions(options?: Partial<DefaultOptions>) {
     presets: [
       [babelPresetEnv, { modules: mergedOptions.modules, loose: true }],
       [babelPresetReact],
-      [babelPresetTypescript, { allowDeclareFields: true }],
+      [babelPresetTypescript],
     ],
     plugins: [
       [transformRuntime],
