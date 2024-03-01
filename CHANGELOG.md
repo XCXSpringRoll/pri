@@ -1,5 +1,5 @@
-<a name="4.4.1-beta.0"></a>
-## [4.4.1-beta.0](https://github.com/prijs/pri/compare/3.3.28-beta.5...4.4.1-beta.0) (2024-02-29)
+<a name="4.4.1-beta.1"></a>
+## [4.4.1-beta.1](https://github.com/prijs/pri/compare/3.3.28-beta.5...4.4.1-beta.1) (2024-02-29)
 
 
 ### Bug Fixes
@@ -87,6 +87,7 @@
 * type ([f67ca43](https://github.com/prijs/pri/commit/f67ca43))
 * update ([722c764](https://github.com/prijs/pri/commit/722c764))
 * update fork-ts-checker-webpack-plugin ([0caed8e](https://github.com/prijs/pri/commit/0caed8e))
+* update version ([d99660a](https://github.com/prijs/pri/commit/d99660a))
 * update version ([1eae18d](https://github.com/prijs/pri/commit/1eae18d))
 * upgrade babel ([1f8aa7d](https://github.com/prijs/pri/commit/1f8aa7d))
 * use sync mode when process.stdio is connected to pipe ([9eb7a50](https://github.com/prijs/pri/commit/9eb7a50))
