@@ -211,6 +211,7 @@ export const getWebpackConfig = async (opts: IOptions) => {
           test: /\.css$/,
           use: extraCssInProd(cssPureLoader),
           exclude: [/\.module\.css$/],
+          loader: "style-loader!css-loader?modules&localIdentName=[path][name]---[local]---[hash:base64:5]"
         },
         {
           test: /\.module\.css$/,
