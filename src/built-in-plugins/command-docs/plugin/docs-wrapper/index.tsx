@@ -98,6 +98,8 @@ const DocsWithRouter = withRouter(Docs);
 
 const App: React.FC = props => {
   return (
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     <HashRouter>
       <DocsWithRouter {...props} />
     </HashRouter>
