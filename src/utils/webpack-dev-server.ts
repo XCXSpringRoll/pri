@@ -52,7 +52,12 @@ export const runWebpackDevServer = async (
   if (opts.pipeConfig) {
     webpackConfig = await opts.pipeConfig(webpackConfig);
   }
-
+  if (_.get(webpackConfig?.output, 'jsonpFunction')) {
+    // @ts-expect-error
+    webpackConfig?.output.chunkLoadingGlobal = _.get(webpackConfig?.output, 'jsonpFunction');
+    // @ts-expect-error
+    delete webpackConfig.output.jsonpFunction;
+  }
   webpackConfig.plugins.push(new WebpackBar());
 
   // If set open in project config, perform a circular dependency check

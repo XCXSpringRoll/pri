@@ -35,6 +35,7 @@ export const runWebpack = async (opts: IOptions<IExtraOptions>): Promise<any> =>
     webpackConfig = await opts.pipeConfig(webpackConfig);
   }
 
+  console.log('webpackConfig?.output', JSON.stringify(webpackConfig?.output));
   if (_.get(webpackConfig?.output, 'jsonpFunction')) {
     // @ts-expect-error
     webpackConfig?.output.chunkLoadingGlobal = _.get(webpackConfig?.output, 'jsonpFunction');
