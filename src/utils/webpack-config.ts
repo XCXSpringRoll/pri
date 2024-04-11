@@ -260,17 +260,21 @@ export const getWebpackConfig = async (opts: IOptions) => {
             return fn(options);
           }, []),
         },
-        { test: /\.html$/, use: ['raw-loader'] },
+        {
+          test: /\.html$/,
+          type: 'asset/source',
+        },
         {
           test: /\.(png|jpg|jpeg|gif|woff|woff2|eot|ttf|svg)$/,
-          use: [
-            {
-              loader: 'url-loader',
-              options: {
-                limit: 1024 * 100,
-              },
+          type: 'asset/resource',
+          parser: {
+            dataUrlCondition: {
+              maxSize: 10 * 1024, // 10KB
             },
-          ],
+          },
+          generator: {
+            filename: 'assets/[hash:8].[name][ext]',
+          },
         },
       ],
     },
@@ -340,7 +344,12 @@ export const getWebpackConfig = async (opts: IOptions) => {
         ignored: /node_modules/,
       }),
     },
-    cache: true,
+    cache: {
+      type: 'filesystem', // 使用文件系统级别的缓存
+      buildDependencies: {
+        config: [__filename], // 当配置文件改变时，缓存失效
+      },
+    },
   };
 
   if (globalState.isDevelopment) {
@@ -364,8 +373,6 @@ export const getWebpackConfig = async (opts: IOptions) => {
         }),
       );
     }
-
-    // config.plugins.push(new OptimizeCssAssetsPlugin());
   }
 
   if (globalState.isDevelopment) {
