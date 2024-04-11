@@ -115,6 +115,7 @@ export const runWebpackDevServer = async (
   }, Promise.resolve(defaultWebpackDevServerConfig))) as any;
 
   if (yargs.argv.measureSpeed) {
+    // @ts-expect-error
     webpackConfig = smp.wrap(webpackConfig);
   }
 

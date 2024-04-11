@@ -15,10 +15,12 @@ export class WrapContent {
   }
 
   public apply(compiler: webpack.Compiler) {
+    // @ts-ignore
     compiler.hooks.compilation.tap('WrapContent', compilation => {
       compilation.hooks.processAssets.tapAsync(
         {
           name: 'WrapContent',
+          // @ts-ignore
           stage: webpack.Compilation.PROCESS_ASSETS_STAGE_OPTIMIZE,
         },
         (assets: any, done: any) => {

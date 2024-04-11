@@ -88,6 +88,7 @@ const buildLess = (wholeProject: boolean, sourcePath: string) => {
 
 const buildSassAndLess = (watch: boolean, outdir: string, wholeProject: boolean, sourcePath: string) => {
   const targetPath = getStyleFilePath('{scss,less}', wholeProject, sourcePath);
+  // eslint-disable-next-line no-console
   const mergeStyle = (resolve: (value?: any) => void, reject: (value?: any) => void) =>
     mergeStream(buildLess(wholeProject, sourcePath), buildSass(wholeProject, sourcePath))
       .pipe(gulpIf(pri.sourceConfig.cssExtract, gulpConcatCss(pri.sourceConfig.outCssFileName)))
@@ -224,6 +225,7 @@ function importRename(packageAbsoluteToRelative = false) {
 }
 
 export const tsPlusBabel = async (watch = false, wholeProject = false, packageInfo: PackageInfo = null) => {
+  // console.log('=====', mainDistPath, moduleDistPath, wholeProject, sourcePath);
   const packagePath = packageInfo ? packageInfo.name : '';
   const rootDistPath = path.join(globalState.projectRootPath, pri.sourceConfig.distDir, packagePath);
   let mainDistPath = path.join(rootDistPath, 'main');

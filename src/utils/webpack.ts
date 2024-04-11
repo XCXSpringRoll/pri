@@ -1,12 +1,15 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as webpack from 'webpack';
+import * as _ from 'lodash';
+import * as util from 'util';
 import * as WebpackBar from 'webpackbar';
 import * as SpeedMeasurePlugin from 'speed-measure-webpack-plugin';
 import * as yargs from 'yargs';
 import { getWebpackConfig, IOptions } from './webpack-config';
 import { getWebpackDllConfig, IDllOptions } from './webpack-dll-config';
 import { hasNodeModules, hasNodeModulesModified, hasExtraVendorsChanged, hasPackageChanged } from './project-helper';
+import { globalState } from './global-state';
 import { logWarn } from './log';
 
 interface IExtraOptions {
@@ -32,9 +35,26 @@ export const runWebpack = async (opts: IOptions<IExtraOptions>): Promise<any> =>
     webpackConfig = await opts.pipeConfig(webpackConfig);
   }
 
+  if (_.get(webpackConfig?.output, 'jsonpFunction')) {
+    // @ts-expect-error
+    webpackConfig?.output.chunkLoadingGlobal = _.get(webpackConfig?.output, 'jsonpFunction');
+    // @ts-expect-error
+    delete webpackConfig.output.jsonpFunction;
+  }
+  // webpack5 清楚构建缓存
+  // webpackConfig.output?.clean = true;
+
+  // const writeFileAsync = util.promisify(fs.writeFile);
+  // await writeFileAsync(
+  //   `${globalState.projectRootPath}/.temp/webpack.config.json`,
+  //   JSON.stringify(webpackConfig, null, 2),
+  //   'utf8',
+  // );
+
   webpackConfig.plugins.push(new WebpackBar());
 
   if (yargs.argv.measureSpeed) {
+    // @ts-expect-error
     webpackConfig = smp.wrap(webpackConfig);
   }
 
