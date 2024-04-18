@@ -120,7 +120,7 @@ export const runWebpackDevServer = async (
   }, Promise.resolve(defaultWebpackDevServerConfig))) as any;
 
   if (yargs.argv.measureSpeed) {
-    // @ts-expect-error
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     webpackConfig = smp.wrap(webpackConfig);
   }
 

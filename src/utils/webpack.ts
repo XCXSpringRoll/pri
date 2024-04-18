@@ -55,7 +55,7 @@ export const runWebpack = async (opts: IOptions<IExtraOptions>): Promise<any> =>
   webpackConfig.plugins.push(new WebpackBar());
 
   if (yargs.argv.measureSpeed) {
-    // @ts-expect-error
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     webpackConfig = smp.wrap(webpackConfig);
   }
 
