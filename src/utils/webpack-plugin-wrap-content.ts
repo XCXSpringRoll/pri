@@ -15,9 +15,12 @@ export class WrapContent {
   }
 
   public apply(compiler: webpack.Compiler) {
+    // @ts-ignore
     compiler.hooks.compilation.tap('WrapContent', compilation => {
       compilation.hooks.optimizeChunkAssets.tapAsync('WrapContent', (chunks, done) => {
+        // @ts-ignore
         chunks.forEach(chunk => {
+          // @ts-ignore
           chunk.files.forEach(fileName => {
             // Ignore workers
             if (fileName.indexOf('worker.js') > -1) {
@@ -37,6 +40,7 @@ export class WrapContent {
             }
           });
         });
+        // @ts-ignore
         done();
       });
     });

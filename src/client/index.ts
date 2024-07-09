@@ -7,6 +7,7 @@ const priStore = (window as any).pri;
 const { globalState } = priStore;
 
 export const history = createBrowserHistory({
+  // @ts-ignore
   basename: globalState.sourceConfig.baseHref,
 });
 
